@@ -57,6 +57,8 @@ class SRRaGANModel(BaseModel):
             self.filter_low = filters.FilterLow().to(self.device)
             self.filter_high = filters.FilterHigh().to(self.device)
             self.use_filters = train_opt['use_filters']
+            if train_opt['use_filters']:
+                logger.info("High/Low pass filters enabled!")
             # -----------------------------------------------------------------------------------------
             # Define if the generator will have a final capping mechanism in the output
             self.outm = None
