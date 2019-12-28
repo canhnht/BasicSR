@@ -14,6 +14,8 @@ from models.modules.LPIPS import perceptual_loss as models #import models.module
 from models.modules.loss import GANLoss, GradientPenaltyLoss, HFENLoss, TVLoss, CharbonnierLoss, ElasticLoss, RelativeL1, L1CosineSim
 from models.modules.losses import spl_loss as spl
 from models.modules.losses.ssim2 import SSIM, MS_SSIM #implementation for use with any PyTorch
+import filters
+
 # from models.modules.losses.ssim3 import SSIM, MS_SSIM #for use of the PyTorch 1.1.1+ optimized implementation
 logger = logging.getLogger('base')
 
@@ -51,6 +53,11 @@ class SRRaGANModel(BaseModel):
 
         # define losses, optimizer and scheduler
         if self.is_train:
+             # ---------------------------------------- ADDED ------------------------------------------
+            self.filter_low = filters.FilterLow().to(self.device)
+            self.filter_high = filters.FilterHigh().to(self.device)
+            self.use_filters = train_opt['use_filters']
+            # -----------------------------------------------------------------------------------------
             # Define if the generator will have a final capping mechanism in the output
             self.outm = None
             if train_opt['finalcap']:
@@ -391,7 +398,17 @@ class SRRaGANModel(BaseModel):
         if self.cri_gan:
             if step % self.D_update_ratio == 0 and step > self.D_init_iters:
                 if self.cri_pix:  # pixel loss
-                    l_g_pix = self.l_pix_w * self.cri_pix(self.fake_H, self.var_H)
+                    #l_g_pix = self.l_pix_w * self.cri_pix(self.fake_H, self.var_H)
+                    #  ------------------------------------- ADDED ------------------------------------------
+                    l_g_pix_f = self.l_pix_w * self.cri_pix(self.filter_low(self.fake_H), self.filter_low(self.var_H))
+                    l_g_pix_nf = self.l_pix_w * self.cri_pix(self.fake_H, self.var_H)
+                    # l_g_mean_color = nn.functional.mse_loss(self.fake_H.mean(3).mean(2), self.var_H.mean(3).mean(2))
+                    if self.use_filters:
+                        l_g_pix = l_g_pix_f
+                    else:
+                        l_g_pix = l_g_pix_nf
+                    # -----------------------------------------------------------------------------------
+                # l_g_pix = self.l_pix_w * self.cri_pix(self.fake_H, self.var_H)
                     l_g_total += l_g_pix
                 if self.cri_ssim: # structural loss
                     l_g_ssim = 1.-(self.l_ssim_w *self.cri_ssim(self.fake_H, self.var_H)) #using ssim2.py
@@ -425,10 +442,22 @@ class SRRaGANModel(BaseModel):
                 if self.cri_cpl:# CPL Loss (SPL)
                     l_g_cpl = self.l_spl_w * self.cri_cpl(self.fake_H, self.var_H)
                     l_g_total += l_g_cpl
+
+                
                 
                 # G gan + cls loss
-                pred_g_fake = self.netD(self.fake_H)
-                pred_d_real = self.netD(self.var_ref).detach()
+                # ------------------------------------------ ADDED ------------------------------------------
+                if self.use_filters:
+                    pred_g_fake = self.netD(self.filter_high(self.fake_H))
+                else:
+                    # ---------------------------------------------------------------------------------------
+                    pred_g_fake = self.netD(self.fake_H)
+                # --------------------------------------- ADDED -----------------------------------------
+                if self.use_filters:
+                    pred_d_real = self.netD(self.filter_high(self.var_ref)).detach()
+                else:
+                    # -----------------------------------------------------------------------------------
+                    pred_d_real = self.netD(self.var_ref).detach()
                 l_g_gan = self.l_gan_w * (self.cri_gan(pred_d_real - torch.mean(pred_g_fake), False) +
                                           self.cri_gan(pred_g_fake - torch.mean(pred_d_real), True)) / 2
                 l_g_total += l_g_gan
@@ -441,8 +470,14 @@ class SRRaGANModel(BaseModel):
 
             self.optimizer_D.zero_grad()
             l_d_total = 0
-            pred_d_real = self.netD(self.var_ref)
-            pred_d_fake = self.netD(self.fake_H.detach())  # detach to avoid BP to G
+             # ------------------------------------------ ADDED ------------------------------------------
+            if self.use_filters:
+                pred_d_real = self.netD(self.filter_high(self.var_ref))
+                pred_d_fake = self.netD(self.filter_high(self.fake_H.detach()))  # detach to avoid BP to G
+            else:
+                # ---------------------------------------------------------------------------------------
+                pred_d_real = self.netD(self.var_ref)
+                pred_d_fake = self.netD(self.fake_H.detach())  # detach to avoid BP to G
             l_d_real = self.cri_gan(pred_d_real - torch.mean(pred_d_fake), True)
             l_d_fake = self.cri_gan(pred_d_fake - torch.mean(pred_d_real), False)
 
