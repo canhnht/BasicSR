@@ -74,13 +74,13 @@ def main():
 
     
     # -------------------------------------------- ADDED --------------------------------------------
-    filter_low = filters.FilterLow(gaussian=False)
-    l1_loss = torch.nn.L1Loss()
-    mse_loss = torch.nn.MSELoss()
-    if torch.cuda.is_available():
-        filter_low = filter_low.cuda()
-        l1_loss = l1_loss.cuda()
-        mse_loss = mse_loss.cuda()
+    #filter_low = filters.FilterLow(gaussian=False)
+    #l1_loss = torch.nn.L1Loss()
+    #mse_loss = torch.nn.MSELoss()
+    #if torch.cuda.is_available():
+    #    filter_low = filter_low.cuda()
+    #    l1_loss = l1_loss.cuda()
+    #    mse_loss = mse_loss.cuda()
     # -----------------------------------------------------------------------------------------------
 
     # random seed
