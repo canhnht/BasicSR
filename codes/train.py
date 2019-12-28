@@ -16,6 +16,8 @@ from data import create_dataloader, create_dataset
 from models import create_model
 from models.modules.LPIPS import compute_dists as lpips
 
+import filters
+
 def get_pytorch_ver():
     #print(torch.__version__)
     pytorch_ver = torch.__version__
@@ -69,6 +71,17 @@ def main():
             tb_logger = SummaryWriter(logdir='../tb_logger/' + opt['name']) #for version tensorboardX >= 1.7
         except:
             tb_logger = SummaryWriter(log_dir='../tb_logger/' + opt['name']) #for version tensorboardX < 1.6
+
+    
+    # -------------------------------------------- ADDED --------------------------------------------
+    filter_low = filters.FilterLow(gaussian=False)
+    l1_loss = torch.nn.L1Loss()
+    mse_loss = torch.nn.MSELoss()
+    if torch.cuda.is_available():
+        filter_low = filter_low.cuda()
+        l1_loss = l1_loss.cuda()
+        mse_loss = mse_loss.cuda()
+    # -----------------------------------------------------------------------------------------------
 
     # random seed
     seed = opt['train']['manual_seed']
@@ -218,6 +231,13 @@ def main():
                     avg_psnr += util.calculate_psnr(cropped_sr_img * 255, cropped_gt_img * 255)
                     avg_ssim += util.calculate_ssim(cropped_sr_img * 255, cropped_gt_img * 255)
                     #avg_lpips += lpips.calculate_lpips([cropped_sr_img], [cropped_gt_img]) # If calculating for each image
+
+                    
+                    # ----------------------------------------- ADDED -----------------------------------------
+                    #val_pix_err_f += l1_loss(filter_low(visuals['SR']), filter_low(visuals['GT']))
+                    #val_pix_err_nf += l1_loss(visuals['SR'], visuals['GT'])
+                    #val_mean_color_err += mse_loss(visuals['SR'].mean(2).mean(1), visuals['GT'].mean(2).mean(1))
+                    # -----------------------------------------------------------------------------------------
 
                 avg_psnr = avg_psnr / idx
                 avg_ssim = avg_ssim / idx
