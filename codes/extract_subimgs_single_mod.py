@@ -12,20 +12,20 @@ import options.options as option
 def main():
     """A multi-thread tool to crop sub imags."""
     parser = argparse.ArgumentParser()
-    parser.add_argument('i', type=str, required=True)
-    parser.add_argument('o', type=str, required=True)
-    parser.add_argument('c', type=int, required=True)
+    parser.add_argument('inputdir', type=str, required=True)
+    parser.add_argument('outputdir', type=str, required=True)
+    parser.add_argument('crop_size', type=int, required=True)
 
-    input_folder = option.parse(parser.parse_args().i)
-    save_folder = option.parse(parser.parse_args().o)
-    crop_sz = option.parse(parser.parse_args().o)
+    input_folder = option.parse(parser.parse_args().inputdir)
+    save_folder = option.parse(parser.parse_args().outputdir)
+    crop_sz = option.parse(parser.parse_args().crop_size)
     #input_folder = '/content/data/HR'
     #save_folder = '/content/data/HRTiles'
     n_thread = 20
     #crop_sz = 128
     step = crop_sz
     thres_sz = crop_sz // 2
-    compression_level = 1  # 3 is the default value in cv2
+    compression_level = 3  # 3 is the default value in cv2
     # CV_IMWRITE_PNG_COMPRESSION from 0 to 9. A higher value means a smaller size and longer
     # compression time. If read raw images during training, use 0 for faster IO speed.
 
