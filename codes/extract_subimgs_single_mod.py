@@ -7,18 +7,15 @@ import cv2
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #from utils.progress_bar import ProgressBar
 import argparse
-import options.options as option
+#import options.options as option
 
 def main():
     """A multi-thread tool to crop sub imags."""
-    parser = argparse.ArgumentParser()
-    parser.add_argument('inputdir', type=str)
-    parser.add_argument('outputdir', type=str)
-    parser.add_argument('crop_size', type=int)
 
-    input_folder = option.parse(parser.parse_args().inputdir)
-    save_folder = option.parse(parser.parse_args().outputdir)
-    crop_sz = option.parse(parser.parse_args().crop_size)
+    raise Exception(sys.argv)
+    input_folder = sys.argv[1]
+    save_folder = sys.argv[2]
+    crop_sz = sys.argv[3]
     #input_folder = '/content/data/HR'
     #save_folder = '/content/data/HRTiles'
     n_thread = 20
