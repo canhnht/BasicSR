@@ -12,9 +12,9 @@ import options.options as option
 def main():
     """A multi-thread tool to crop sub imags."""
     parser = argparse.ArgumentParser()
-    parser.add_argument('inputdir', type=str, required=True)
-    parser.add_argument('outputdir', type=str, required=True)
-    parser.add_argument('crop_size', type=int, required=True)
+    parser.add_argument('inputdir', type=str)
+    parser.add_argument('outputdir', type=str)
+    parser.add_argument('crop_size', type=int)
 
     input_folder = option.parse(parser.parse_args().inputdir)
     save_folder = option.parse(parser.parse_args().outputdir)
