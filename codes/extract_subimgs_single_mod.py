@@ -12,9 +12,9 @@ import argparse
 def main():
     """A multi-thread tool to crop sub imags."""
 
-    input_folder = sys.argv[1]
-    save_folder = sys.argv[2]
-    crop_sz = sys.argv[3]
+    input_folder = str(sys.argv[1])
+    save_folder = str(sys.argv[2])
+    crop_sz = int(sys.argv[3])
     #input_folder = '/content/data/HR'
     #save_folder = '/content/data/HRTiles'
     n_thread = 20
