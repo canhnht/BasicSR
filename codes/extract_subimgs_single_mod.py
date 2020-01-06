@@ -12,7 +12,6 @@ import argparse
 def main():
     """A multi-thread tool to crop sub imags."""
 
-    raise Exception(sys.argv)
     input_folder = sys.argv[1]
     save_folder = sys.argv[2]
     crop_sz = sys.argv[3]
