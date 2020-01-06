@@ -19,7 +19,7 @@ from models import create_model
 from models.modules.LPIPS import compute_dists as lpips
 
 drivebackup = "/storage/TrainingBackup/"
-experiments = "/tmp/BasicSR/experiments/"
+experiments = "/content/BasicSR/experiments/"
 
 def copytree(src, dst, symlinks=False, ignore=None):
   for item in os.listdir(src):
