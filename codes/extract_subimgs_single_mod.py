@@ -17,11 +17,12 @@ def main():
     crop_sz = int(sys.argv[3])
     #input_folder = '/content/data/HR'
     #save_folder = '/content/data/HRTiles'
-    n_thread = 20
+    n_thread = int(sys.argv[7])
     #crop_sz = 128
-    step = crop_sz
-    thres_sz = crop_sz // 2
-    compression_level = 3  # 3 is the default value in cv2
+    step = int(sys.argv[4])
+    thres_sz = int(sys.argv[5])
+    compression_level = int(sys.argv[6])  # 3 is the default value in cv2
+    remove = int(sys.argv[8])
     # CV_IMWRITE_PNG_COMPRESSION from 0 to 9. A higher value means a smaller size and longer
     # compression time. If read raw images during training, use 0 for faster IO speed.
 
@@ -45,13 +46,13 @@ def main():
     pool = Pool(n_thread)
     for path in img_list:
         pool.apply_async(worker,
-            args=(path, save_folder, crop_sz, step, thres_sz, compression_level))
+            args=(path, save_folder, crop_sz, step, thres_sz, compression_level, remove))
     pool.close()
     pool.join()
     print('All subprocesses done.')
 
 
-def worker(path, save_folder, crop_sz, step, thres_sz, compression_level):
+def worker(path, save_folder, crop_sz, step, thres_sz, compression_level, remove):
     img_name = os.path.basename(path)
     img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
 
@@ -85,7 +86,8 @@ def worker(path, save_folder, crop_sz, step, thres_sz, compression_level):
             cv2.imwrite(
                 os.path.join(save_folder, img_name.replace('.png', '_s{:03d}.png'.format(index))),
                 crop_img, [cv2.IMWRITE_PNG_COMPRESSION, compression_level])
-    os.remove(path)
+    if remove == 1:
+        os.remove(path)
     return 'Processing {:s} ...'.format(img_name)
 
 
