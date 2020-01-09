@@ -34,7 +34,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
 def movebackups(files, jsondir):
     print("Backing up...")
     allfiles = set(glob.glob(os.path.join(experiments, "**/*.*"), recursive = True))
-    logs = set(glob.glob(os.path.join(experiments, "**/*.log"), recursive = True))
+    logs = set(glob.glob(os.path.join(experiments, "**/*.log"), recursive = True)) | set(glob.glob(os.path.join(experiments, "**/*.png"), recursive = True))
     newfiles = (allfiles - files) | logs
     shutil.rmtree(drivebackup)
     os.makedirs(drivebackup, exist_ok = True)
