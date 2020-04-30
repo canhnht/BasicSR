@@ -2,8 +2,10 @@
 import logging
 import torch.utils.data
 
+
 def create_dataloader(dataset, dataset_opt):
     '''create dataloader '''
+    print('create_dataloaderrrrrrr', dataset_opt)
     phase = dataset_opt['phase']
     if phase == 'train':
         return torch.utils.data.DataLoader(
@@ -20,6 +22,7 @@ def create_dataloader(dataset, dataset_opt):
 
 def create_dataset(dataset_opt):
     '''create dataset'''
+    print('create_datasettttt', dataset_opt)
     mode = dataset_opt['mode']
     if mode == 'LR':
         from data.LR_dataset import LRDataset as D
@@ -30,10 +33,10 @@ def create_dataset(dataset_opt):
     elif mode == 'LRHRseg_bg':
         from data.LRHR_seg_bg_dataset import LRHRSeg_BG_Dataset as D
     else:
-        raise NotImplementedError('Dataset [{:s}] is not recognized.'.format(mode))
+        raise NotImplementedError(
+            'Dataset [{:s}] is not recognized.'.format(mode))
     dataset = D(dataset_opt)
     logger = logging.getLogger('base')
     logger.info('Dataset [{:s} - {:s}] is created.'.format(dataset.__class__.__name__,
                                                            dataset_opt['name']))
     return dataset
-

@@ -31,6 +31,7 @@ def save_images(image, num_rep, sufix):
 
 class SRRaGANModel(BaseModel):
     def __init__(self, opt):
+        print('SRRaGANModelllll', opt)
         super(SRRaGANModel, self).__init__(opt)
         train_opt = opt['train']
 
@@ -39,7 +40,7 @@ class SRRaGANModel(BaseModel):
                 z_norm = opt['datasets']['train']['znorm']
             else:
                 z_norm = False
-        
+
         # define networks and load pretrained models
         self.netG = networks.define_G(opt).to(self.device)  # G
         if self.is_train:
@@ -55,7 +56,7 @@ class SRRaGANModel(BaseModel):
             self.outm = None
             if train_opt['finalcap']:
                 self.outm = train_opt['finalcap']
-                
+
             # G pixel loss
             #"""
             if train_opt['pixel_weight']:
@@ -63,7 +64,7 @@ class SRRaGANModel(BaseModel):
                     l_pix_type = train_opt['pixel_criterion']
                 else: #default to cb
                     l_fea_type = 'cb'
-                    
+
                 if l_pix_type == 'l1':
                     self.cri_pix = nn.L1Loss().to(self.device)
                 elif l_pix_type == 'l2':
@@ -91,7 +92,7 @@ class SRRaGANModel(BaseModel):
                     l_fea_type = train_opt['feature_criterion']
                 else: #default to l1
                     l_fea_type = 'l1'
-                    
+
                 if l_fea_type == 'l1':
                     self.cri_fea = nn.L1Loss().to(self.device)
                 elif l_fea_type == 'l2':
@@ -109,7 +110,7 @@ class SRRaGANModel(BaseModel):
             if self.cri_fea:  # load VGG perceptual loss
                 self.netF = networks.define_F(opt, use_bn=False).to(self.device)
             #"""
-            
+
             #HFEN loss
             #"""
             if train_opt['hfen_weight']:
@@ -132,7 +133,7 @@ class SRRaGANModel(BaseModel):
                 logger.info('Remove HFEN loss.')
                 self.cri_hfen = None
             #"""
-                
+
             #TV loss
             #"""
             if train_opt['tv_weight']:
@@ -142,9 +143,9 @@ class SRRaGANModel(BaseModel):
                     tv_norm = train_opt['tv_norm']
                 else:
                     tv_norm = 1
-                
+
                 if l_tv_type == 'normal':
-                    self.cri_tv = TVLoss(self.l_tv_w, p=tv_norm).to(self.device) 
+                    self.cri_tv = TVLoss(self.l_tv_w, p=tv_norm).to(self.device)
                 elif l_tv_type == '4D':
                     self.cri_tv = TVLoss4D(self.l_tv_w).to(self.device) #Total Variation regularization in 4 directions
                 else:
@@ -153,17 +154,17 @@ class SRRaGANModel(BaseModel):
                 logger.info('Remove TV loss.')
                 self.cri_tv = None
             #"""
-                
+
             #SSIM loss
             #"""
             if train_opt['ssim_weight']:
                 self.l_ssim_w = train_opt['ssim_weight']
-                
+
                 if train_opt['ssim_type']:
                     l_ssim_type = train_opt['ssim_type']
                 else: #default to ms-ssim
                     l_ssim_type = 'ms-ssim'
-                    
+
                 if l_ssim_type == 'ssim':
                     self.cri_ssim = SSIM(win_size=11, win_sigma=1.5, size_average=True, data_range=1., channel=3).to(self.device)
                 elif l_ssim_type == 'ms-ssim':
@@ -172,7 +173,7 @@ class SRRaGANModel(BaseModel):
                 logger.info('Remove SSIM loss.')
                 self.cri_ssim = None
             #"""
-            
+
             #LPIPS loss
             """
             lpips_spatial = False
@@ -192,7 +193,7 @@ class SRRaGANModel(BaseModel):
                     self.lpips_norm = False # images are already in the [-1,1] range
                 else:
                     self.lpips_norm = True # normalize images from [0,1] range to [-1,1]
-                    
+
                 self.l_lpips_w = train_opt['lpips_weight']
                 # Can use original off-the-shelf uncalibrated networks 'net' or Linearly calibrated models (LPIPS) 'net-lin'
                 if train_opt['lpips_type']:
@@ -204,10 +205,10 @@ class SRRaGANModel(BaseModel):
                     lpips_net = train_opt['lpips_net']
                 else: # Default use VGG for feature extraction
                     lpips_net = 'vgg'
-                self.cri_lpips = models.PerceptualLoss(model=lpips_type, net=lpips_net, use_gpu=lpips_GPU, model_path=None, spatial=lpips_spatial) #.to(self.device) 
+                self.cri_lpips = models.PerceptualLoss(model=lpips_type, net=lpips_net, use_gpu=lpips_GPU, model_path=None, spatial=lpips_spatial) #.to(self.device)
                 # Linearly calibrated models (LPIPS)
-                # self.cri_lpips = models.PerceptualLoss(model='net-lin', net='alex', use_gpu=lpips_GPU, model_path=None, spatial=lpips_spatial) #.to(self.device) 
-                # self.cri_lpips = models.PerceptualLoss(model='net-lin', net='vgg', use_gpu=lpips_GPU, model_path=None, spatial=lpips_spatial) #.to(self.device) 
+                # self.cri_lpips = models.PerceptualLoss(model='net-lin', net='alex', use_gpu=lpips_GPU, model_path=None, spatial=lpips_spatial) #.to(self.device)
+                # self.cri_lpips = models.PerceptualLoss(model='net-lin', net='vgg', use_gpu=lpips_GPU, model_path=None, spatial=lpips_spatial) #.to(self.device)
                 # Off-the-shelf uncalibrated networks
                 # Can set net = 'alex', 'squeeze' or 'vgg'
                 # self.cri_lpips = models.PerceptualLoss(model='net', net='alex', use_gpu=lpips_GPU, model_path=None, spatial=lpips_spatial)
@@ -218,7 +219,7 @@ class SRRaGANModel(BaseModel):
                 logger.info('Remove LPIPS loss.')
                 self.cri_lpips = None
             #"""
-            
+
             #SPL loss
             #"""
             if train_opt['spl_weight']:
@@ -226,7 +227,7 @@ class SRRaGANModel(BaseModel):
                 l_spl_type = train_opt['spl_type']
                 # SPL Normalization (from [-1,1] images to [0,1] range, if needed)
                 if z_norm == True: # if images are in [-1,1] range
-                    self.spl_norm = True # normalize images to [0, 1] 
+                    self.spl_norm = True # normalize images to [0, 1]
                 else:
                     self.spl_norm = False # images are already in [0, 1] range
                 # YUV Normalization (from [-1,1] images to [0,1] range, if needed, but mandatory)
@@ -234,7 +235,7 @@ class SRRaGANModel(BaseModel):
                     self.yuv_norm = True # normalize images to [0, 1] for yuv calculations
                 else:
                     self.yuv_norm = False # images are already in [0, 1] range
-                if l_spl_type == 'spl': # Both GPL and CPL 
+                if l_spl_type == 'spl': # Both GPL and CPL
                     # Gradient Profile Loss
                     self.cri_gpl = spl.GPLoss(spl_norm=self.spl_norm)
                     # Color Profile Loss
@@ -275,11 +276,11 @@ class SRRaGANModel(BaseModel):
                 logger.info('Remove GAN loss.')
                 self.cri_gan = None
             #"""
-            
+
             # optimizers
             # G
             wd_G = train_opt['weight_decay_G'] if train_opt['weight_decay_G'] else 0
-            
+
             optim_params = []
             for k, v in self.netG.named_parameters():  # can optimize for a part of the model
                 if v.requires_grad:
@@ -289,7 +290,7 @@ class SRRaGANModel(BaseModel):
             self.optimizer_G = torch.optim.Adam(optim_params, lr=train_opt['lr_G'], \
                 weight_decay=wd_G, betas=(train_opt['beta1_G'], 0.999))
             self.optimizers.append(self.optimizer_G)
-            
+
             # D
             if self.cri_gan:
                 wd_D = train_opt['weight_decay_D'] if train_opt['weight_decay_D'] else 0
@@ -333,7 +334,7 @@ class SRRaGANModel(BaseModel):
                     self.schedulers.append(
                         #lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.2, threshold=0.01, patience=5)
                         lr_scheduler.ReduceLROnPlateau(
-                            optimizer, mode=train_opt['plateau_mode'], factor=train_opt['plateau_factor'], 
+                            optimizer, mode=train_opt['plateau_mode'], factor=train_opt['plateau_factor'],
                             threshold=train_opt['plateau_threshold'], patience=train_opt['plateau_patience']))
             else:
                 raise NotImplementedError('Learning rate scheme ("lr_scheme") not defined or not recognized.')
@@ -353,7 +354,7 @@ class SRRaGANModel(BaseModel):
     def feed_data_batch(self, data, need_HR=True):
         # LR
         self.var_L = data
-        
+
     def optimize_parameters(self, step):
         # G
         if self.cri_gan:
@@ -365,18 +366,18 @@ class SRRaGANModel(BaseModel):
         else: #regular models without the final activation option
             self.fake_H = self.netG(self.var_L)
         l_g_total = 0
-        
+
         """ # Debug
         print ("SR min. val: ", torch.min(self.fake_H))
         print ("SR max. val: ", torch.max(self.fake_H))
-        
+
         print ("LR min. val: ", torch.min(self.var_L))
         print ("LR max. val: ", torch.max(self.var_L))
-        
+
         print ("HR min. val: ", torch.min(self.var_H))
         print ("HR max. val: ", torch.max(self.var_H))
         #"""
-        
+
         """ #debug
         #####################################################################
         #test_save_img = False
@@ -404,13 +405,13 @@ class SRRaGANModel(BaseModel):
                     fake_fea = self.netF(self.fake_H)
                     l_g_fea = self.l_fea_w * self.cri_fea(fake_fea, real_fea)
                     l_g_total += l_g_fea
-                if self.cri_hfen:  # HFEN loss 
+                if self.cri_hfen:  # HFEN loss
                     l_g_HFEN = self.l_hfen_w * self.cri_hfen(self.fake_H, self.var_H)
                     l_g_total += l_g_HFEN
                 if self.cri_tv: #TV loss
                     l_g_tv = self.cri_tv(self.fake_H) #note: the weight is already multiplied inside the function, doesn't need to be here
                     l_g_total += l_g_tv
-                if self.cri_lpips: #LPIPS loss                
+                if self.cri_lpips: #LPIPS loss
                     # If "spatial = False" .forward() returns a scalar value, if "spatial = True", returns a map (5 layers for vgg and alex or 7 for squeeze)
                     #NOTE: .mean() is only to make the resulting loss into a scalar if "spatial = True", the mean distance is approximately the same as the non-spatial distance: https://github.com/richzhang/PerceptualSimilarity/blob/master/test_network.py
                     #l_g_lpips = self.cri_lpips.forward(self.fake_H,self.var_H).mean() # -> If normalize is False (default), assumes the images are already between [-1,+1]
@@ -425,7 +426,7 @@ class SRRaGANModel(BaseModel):
                 if self.cri_cpl:# CPL Loss (SPL)
                     l_g_cpl = self.l_spl_w * self.cri_cpl(self.fake_H, self.var_H)
                     l_g_total += l_g_cpl
-                
+
                 # G gan + cls loss
                 pred_g_fake = self.netD(self.fake_H)
                 pred_d_real = self.netD(self.var_ref).detach()
@@ -475,11 +476,11 @@ class SRRaGANModel(BaseModel):
                     self.log_dict['l_g_tv'] = l_g_tv.item()
                 if self.cri_ssim:
                     self.log_dict['l_g_ssim'] = l_g_ssim.item()
-                if self.cri_lpips: 
+                if self.cri_lpips:
                     self.log_dict['l_g_lpips'] = l_g_lpips.item()
-                if self.cri_gpl: 
+                if self.cri_gpl:
                     self.log_dict['l_g_gpl'] = l_g_gpl.item()
-                if self.cri_cpl: 
+                if self.cri_cpl:
                     self.log_dict['l_g_cpl'] = l_g_cpl.item()
                 self.log_dict['l_g_gan'] = l_g_gan.item()
             # D
@@ -491,7 +492,7 @@ class SRRaGANModel(BaseModel):
             # D outputs
             self.log_dict['D_real'] = torch.mean(pred_d_real.detach())
             self.log_dict['D_fake'] = torch.mean(pred_d_fake.detach())
-        
+
         else:
             if self.cri_pix:  # pixel loss
                 l_g_pix = self.l_pix_w * self.cri_pix(self.fake_H, self.var_H)
@@ -507,13 +508,13 @@ class SRRaGANModel(BaseModel):
                 fake_fea = self.netF(self.fake_H)
                 l_g_fea = self.l_fea_w * self.cri_fea(fake_fea, real_fea)
                 l_g_total += l_g_fea
-            if self.cri_hfen:  # HFEN loss 
+            if self.cri_hfen:  # HFEN loss
                 l_g_HFEN = self.l_hfen_w * self.cri_hfen(self.fake_H, self.var_H)
                 l_g_total += l_g_HFEN
             if self.cri_tv: #TV loss
                 l_g_tv = self.cri_tv(self.fake_H) #note: the weight is already multiplied inside the function, doesn't need to be here
                 l_g_total += l_g_tv
-            if self.cri_lpips: #LPIPS loss                
+            if self.cri_lpips: #LPIPS loss
                 # If "spatial = False" .forward() returns a scalar value, if "spatial = True", returns a map (5 layers for vgg and alex or 7 for squeeze)
                 #NOTE: .mean() is only to make the resulting loss into a scalar if "spatial = True", the mean distance is approximately the same as the non-spatial distance: https://github.com/richzhang/PerceptualSimilarity/blob/master/test_network.py
                 #l_g_lpips = self.cri_lpips.forward(self.fake_H,self.var_H).mean() # -> If normalize is False (default), assumes the images are already between [-1,+1]
@@ -521,8 +522,8 @@ class SRRaGANModel(BaseModel):
                 #l_g_lpips = self.cri_lpips.forward(self.fake_H, self.var_H, normalize=True) # If "spatial = False" returns a scalar value
                 #print(l_g_lpips)
                 l_g_total += l_g_lpips
-            # SPL note: we can compute the GP loss between output and input and the colour loss 
-            # between output and target to train a generator in an auto-encoder fashion for 
+            # SPL note: we can compute the GP loss between output and input and the colour loss
+            # between output and target to train a generator in an auto-encoder fashion for
             # style-transfer applications.
             if self.cri_gpl: # GPL Loss (SPL)
                 l_g_gpl = self.l_spl_w * self.cri_gpl(self.fake_H, self.var_H)
@@ -530,10 +531,10 @@ class SRRaGANModel(BaseModel):
             if self.cri_cpl: # CPL Loss (SPL)
                 l_g_cpl = self.l_spl_w * self.cri_cpl(self.fake_H, self.var_H)
                 l_g_total += l_g_cpl
-                
+
             l_g_total.backward()
             self.optimizer_G.step()
-            
+
             # set log
             # G
             if self.cri_pix:
@@ -546,11 +547,11 @@ class SRRaGANModel(BaseModel):
                 self.log_dict['l_g_tv'] = l_g_tv.item()
             if self.cri_ssim:
                 self.log_dict['l_g_ssim'] = l_g_ssim.item()
-            if self.cri_lpips: 
+            if self.cri_lpips:
                 self.log_dict['l_g_lpips'] = l_g_lpips.item()
-            if self.cri_gpl: 
+            if self.cri_gpl:
                 self.log_dict['l_g_gpl'] = l_g_gpl.item()
-            if self.cri_cpl: 
+            if self.cri_cpl:
                 self.log_dict['l_g_cpl'] = l_g_cpl.item()
 
     def test(self):
@@ -581,7 +582,7 @@ class SRRaGANModel(BaseModel):
         if need_HR:
             out_dict['HR'] = self.var_H.detach().float().cpu()
         return out_dict
-        
+
     def print_network(self):
         # Generator
         s, n = self.get_network_description(self.netG)
