@@ -60,6 +60,8 @@ def worker(path, save_folder, crop_sz, step, thres_sz, compression_level):
         h, w, c = img.shape
     else:
         raise ValueError('Wrong image shape - {}'.format(n_channels))
+    if h % 10 != 0 or w % 10 != 0:
+        return
 
     h_space = np.arange(0, h - crop_sz + 1, step)
     if h - (h_space[-1] + crop_sz) > thres_sz:
