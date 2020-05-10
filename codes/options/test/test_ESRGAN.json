@@ -1,8 +1,8 @@
 {
   "name": "RRDB_ESRGAN_x4",
-  "suffix": "_ESRGAN",
+  "suffix": "_DEJPEG",
   "model": "srragan", // srragan | asrragan | ppon
-  "scale": 4,
+  "scale": 1,
   // "gpu_ids": [],
 
   "datasets": {
@@ -11,7 +11,7 @@
       "name": "seta",
       "mode": "LR",
       //, "dataroot_HR": "../test1/HR"
-      "dataroot_LR": "../test1/LR"
+      "dataroot_LR": "../experiments/test1/noise"
       //, "znorm": true // Test. To use with models that have been trained [-1, 1] range. Default = None (range [0,1])
     }
     // "test_2": {
@@ -26,7 +26,10 @@
 
   "path": {
     "root": "/Users/zuizui/Documents/projects/acworks/code/ac-kakudai-kirei/BasicSR",
-    "pretrain_model_G": "/Volumes/Young Buffalo/datasets/basicsr/upscaling-wiki/4xESRGAN.pth"
+    // "pretrain_model_G": "/Volumes/Young Buffalo/datasets/basicsr/ESRGAN_models/RRDB_ESRGAN_x4_old_arch.pth"
+    // "pretrain_model_G": "/Volumes/Young Buffalo/datasets/basicsr/cleaning/1x_ISO_denoise_v2.pth",
+    // "pretrain_model_G": "/Volumes/Young Buffalo/datasets/basicsr/cleaning/1x_Fatality_DeBlur_270000_G.pth",
+    "pretrain_model_G": "/Volumes/Young Buffalo/datasets/basicsr/cleaning/1x_DeJpeg_Fatality_PlusULTRA_200000_G.pth"
   },
 
   "network_G": {
