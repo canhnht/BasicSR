@@ -1,3 +1,4 @@
+from utils.progress_bar import ProgressBar
 import os
 import os.path
 import sys
@@ -5,7 +6,6 @@ from multiprocessing import Pool
 import numpy as np
 import cv2
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.progress_bar import ProgressBar
 
 
 def main():
@@ -29,7 +29,8 @@ def main():
 
     img_list = []
     for root, _, file_list in sorted(os.walk(input_folder)):
-        path = [os.path.join(root, x) for x in file_list]  # assume only images in the input_folder
+        # assume only images in the input_folder
+        path = [os.path.join(root, x) for x in file_list]
         img_list.extend(path)
 
     def update(arg):
@@ -40,8 +41,9 @@ def main():
     pool = Pool(n_thread)
     for path in img_list:
         pool.apply_async(worker,
-            args=(path, save_folder, crop_sz, step, thres_sz, compression_level),
-            callback=update)
+                         args=(path, save_folder, crop_sz, step,
+                               thres_sz, compression_level),
+                         callback=update)
     pool.close()
     pool.join()
     print('All subprocesses done.')
@@ -79,7 +81,8 @@ def worker(path, save_folder, crop_sz, step, thres_sz, compression_level):
             # if var > 0.008:
             #     print(img_name, index_str, var)
             cv2.imwrite(
-                os.path.join(save_folder, img_name.replace('.png', '_s{:03d}.png'.format(index))),
+                os.path.join(save_folder, img_name.replace('.png', '_s{:03d}.png'.format(
+                    index)).replace('.jpg', '_s{:03d}.jpg'.format(index)).replace('.jpeg', '_s{:03d}.jpeg'.format(index))),
                 crop_img, [cv2.IMWRITE_PNG_COMPRESSION, compression_level])
     return 'Processing {:s} ...'.format(img_name)
 
