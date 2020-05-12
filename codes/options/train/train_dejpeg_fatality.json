@@ -50,12 +50,12 @@
       "hr_rrot": false, //rotate images in random degress between -45 and 45
 
       // Noise and blur augmentations:
-      "lr_blur": true, //true | false
+      "lr_blur": false, //true | false
       "lr_blur_types": ["average", "box", "gaussian", "bilateral", "clean"], //select from: ["average","box","gaussian","bilateral","clean"] //#blur options #median and motion aren't working yet
-      "lr_noise": false, //true | false
-      "lr_noise_types": ["gaussian", "clean", "clean", "clean", "clean"], //select from: ["gaussian", "JPEG", "quantize", "poisson", "dither", "s&p", "speckle", "clean"]
-      "lr_noise2": false, //true | false
-      "lr_noise_types2": ["dither", "dither", "clean", "clean"], //select from: ["gaussian", "JPEG", "quantize", "poisson", "dither", "s&p", "speckle", "clean"]
+      "lr_noise": true, //true | false
+      "lr_noise_types": ["gaussian", "JPEG", "clean"], //select from: ["gaussian", "JPEG", "quantize", "poisson", "dither", "s&p", "speckle", "clean"]
+      "lr_noise2": true, //true | false
+      "lr_noise_types2": ["dither", "JPEG", "clean"], //select from: ["gaussian", "JPEG", "quantize", "poisson", "dither", "s&p", "speckle", "clean"]
       "hr_noise": false, //true | false
       "hr_noise_types": ["gaussian", "clean", "clean", "clean", "clean"] //select from: ["gaussian", "JPEG", "quantize", "poisson", "dither", "s&p", "speckle", "clean"]
 
@@ -94,8 +94,12 @@
       "hr_rrot": false, //rotate images in random degress between -45 and 45
 
       // Noise and blur augmentations:
-      "lr_blur": true, //true | false
-      "lr_blur_types": ["average", "box", "gaussian", "bilateral", "clean"] //select from: ["average","box","gaussian","bilateral","clean"] //#blur options #median and motion aren't working yet
+      "lr_blur": false, //true | false
+      "lr_blur_types": ["average", "box", "gaussian", "bilateral", "clean"], //select from: ["average","box","gaussian","bilateral","clean"] //#blur options #median and motion aren't working yet
+      "lr_noise": true, //true | false
+      "lr_noise_types": ["gaussian", "JPEG", "clean"], //select from: ["gaussian", "JPEG", "quantize", "poisson", "dither", "s&p", "speckle", "clean"]
+      "lr_noise2": true, //true | false
+      "lr_noise_types2": ["dither", "JPEG", "clean"] //select from: ["gaussian", "JPEG", "quantize", "poisson", "dither", "s&p", "speckle", "clean"]
     }
   },
 
