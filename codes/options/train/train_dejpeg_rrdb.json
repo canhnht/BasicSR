@@ -1,9 +1,9 @@
 {
-  "name": "debug_DEBLUR_FATALITY", //use "debug" in the name to run a test session and check everything is working. Does validation and state saving every 8 iterations.
-  //"name": "DEBLUR_FATALITY" //remove "debug" to run the real training session.
+  "name": "debug_DEJPEG_RRDB", //use "debug" in the name to run a test session and check everything is working. Does validation and state saving every 8 iterations.
+  //"name": "DEJPEG_RRDB" //remove "debug" to run the real training session.
   "use_tb_logger": true,
   "model": "srragan", //srragan | sr | srgan | ppon | asrragan
-  "scale": 1,
+  "scale": 4,
   "gpu_ids": [0],
 
   //Dataset options:
@@ -26,8 +26,8 @@
       "subset_file": null,
       "use_shuffle": true,
       "znorm": false, // true | false // To normalize images in [-1, 1] range. Default = None (range [0,1]). Can use with activation function like tanh.
-      "n_workers": 4, //0 to disable CPU multithreading, or an integrer representing CPU threads to use for dataloading
-      "batch_size": 8,
+      "n_workers": 8, //0 to disable CPU multithreading, or an integrer representing CPU threads to use for dataloading
+      "batch_size": 28,
       "HR_size": 128, //patch size. Default: 128. Needs to be coordinated with the patch size of the features network
 
       // Color space conversion: "color" for both LR and HR, "color_LR" for LR independently, "color_HR" for HR independently
@@ -101,9 +101,9 @@
 
   "path": {
     "root": "/home/acworks/Documents/projects/ac-kakudai-kirei/BasicSR",
-    "pretrain_model_G": "/mnt/1891d811-2584-43fe-8168-97e68e40d511/datasets/basicsr/cleaning/1x_Fatality_DeBlur_270000_G.pth"
-    // "pretrain_model_G": "/mnt/1891d811-2584-43fe-8168-97e68e40d511/datasets/basicsr/ESRGAN_models/RRDB_ESRGAN_x4_old_arch.pth"
+    "pretrain_model_G": "/mnt/1891d811-2584-43fe-8168-97e68e40d511/datasets/basicsr/ESRGAN_models/RRDB_ESRGAN_x4_old_arch.pth"
     // "pretrain_model_G": "/mnt/1891d811-2584-43fe-8168-97e68e40d511/datasets/basicsr/ESRGAN_models/4xBox.pth"
+    // "pretrain_model_G": "/mnt/1891d811-2584-43fe-8168-97e68e40d511/datasets/basicsr/cleaning/1x_Fatality_DeBlur_270000_G.pth"
     //, "pretrain_model_G": "../experiments/pretrained_models/PPON_G.pth"
     // , "resume_state": "../experiments/debug_002_RRDB_ESRGAN_x4_DIV2K/training_state/16.state"
   },

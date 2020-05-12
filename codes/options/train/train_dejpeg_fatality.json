@@ -1,17 +1,17 @@
 {
-  "name": "debug_DEBLUR", //use "debug" in the name to run a test session and check everything is working. Does validation and state saving every 8 iterations.
-  //"name": "DEBLUR" //remove "debug" to run the real training session.
+  "name": "debug_DEJPEG_FATALITY", //use "debug" in the name to run a test session and check everything is working. Does validation and state saving every 8 iterations.
+  //"name": "DEJPEG_FATALITY" //remove "debug" to run the real training session.
   "use_tb_logger": true,
   "model": "srragan", //srragan | sr | srgan | ppon | asrragan
-  "scale": 4,
-  // "gpu_ids": [0],
+  "scale": 1,
+  "gpu_ids": [0],
 
   //Dataset options:
   "datasets": {
     "train": {
       "name": "PHOTOAC",
       "mode": "LRHROTF",
-      "dataroot_HR": "/Volumes/Young Buffalo/datasets/acworks/photo-ac-data", //Original, with a single directory
+      "dataroot_HR": "/mnt/1891d811-2584-43fe-8168-97e68e40d511/datasets/photo-ac-data", //Original, with a single directory
       // "dataroot_LR": "../datasets/train/lr", //Original, with a single directory
       // "dataroot_HR": [
       //   "../datasets/train/hr1",
@@ -74,7 +74,7 @@
     "val": {
       "name": "DIV2K_val",
       "mode": "LRHROTF",
-      "dataroot_HR": "/Volumes/Young Buffalo/datasets/div2k-2017/DIV2K_train_HR",
+      "dataroot_HR": "/mnt/1891d811-2584-43fe-8168-97e68e40d511/datasets/div2k-2017/DIV2K_train_HR",
       // "dataroot_LR": "../datasets/val/lr",
 
       "znorm": false, // true | false // To normalize images in [-1, 1] range. Default = None (range [0,1]). Can use with activation function like tanh.
@@ -100,9 +100,9 @@
   },
 
   "path": {
-    "root": "/Users/thanhcanh/Documents/projects/ac-kakudai-kirei/BasicSR",
-    "pretrain_model_G": "/Volumes/Young Buffalo/datasets/basicsr/ESRGAN_models/RRDB_ESRGAN_x4_old_arch.pth"
-    // "pretrain_model_G": "/mnt/1891d811-2584-43fe-8168-97e68e40d511/datasets/basicsr/cleaning/1x_Fatality_DeBlur_270000_G.pth"
+    "root": "/home/acworks/Documents/projects/ac-kakudai-kirei/BasicSR",
+    "pretrain_model_G": "/mnt/1891d811-2584-43fe-8168-97e68e40d511/datasets/basicsr/cleaning/1x_DeJpeg_Fatality_PlusULTRA_200000_G.pth"
+    // "pretrain_model_G": "/mnt/1891d811-2584-43fe-8168-97e68e40d511/datasets/basicsr/ESRGAN_models/RRDB_ESRGAN_x4_old_arch.pth"
     //, "pretrain_model_G": "../experiments/pretrained_models/PPON_G.pth"
     // , "resume_state": "../experiments/debug_002_RRDB_ESRGAN_x4_DIV2K/training_state/16.state"
   },
