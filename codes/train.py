@@ -243,13 +243,14 @@ def main():
                     avg_ssim += util.calculate_ssim(
                         cropped_sr_img * 255, cropped_gt_img * 255)
                     # If calculating for each image
-                    avg_lpips += lpips.calculate_lpips(
-                        [cropped_sr_img], [cropped_gt_img])
+                    # avg_lpips += lpips.calculate_lpips([cropped_sr_img], [cropped_gt_img])
 
                 avg_psnr = avg_psnr / idx
                 avg_ssim = avg_ssim / idx
-                avg_lpips = avg_lpips / idx  # If calculating for each image
-                # avg_lpips = lpips.calculate_lpips(val_sr_imgs_list,val_gt_imgs_list) # If calculating only once for all images
+                # avg_lpips=avg_lpips / idx  # If calculating for each image
+                # If calculating only once for all images
+                avg_lpips = lpips.calculate_lpips(
+                    val_sr_imgs_list, val_gt_imgs_list)
 
                 # log
                 # logger.info('# Validation # PSNR: {:.5g}, SSIM: {:.5g}'.format(avg_psnr, avg_ssim))
