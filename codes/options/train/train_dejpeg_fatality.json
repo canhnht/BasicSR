@@ -97,9 +97,9 @@
       "lr_blur": false, //true | false
       "lr_blur_types": ["average", "box", "gaussian", "bilateral", "clean"], //select from: ["average","box","gaussian","bilateral","clean"] //#blur options #median and motion aren't working yet
       "lr_noise": true, //true | false
-      "lr_noise_types": ["gaussian", "JPEG", "clean"], //select from: ["gaussian", "JPEG", "quantize", "poisson", "dither", "s&p", "speckle", "clean"]
+      "lr_noise_types": ["JPEG", "clean"], //select from: ["gaussian", "JPEG", "quantize", "poisson", "dither", "s&p", "speckle", "clean"]
       "lr_noise2": true, //true | false
-      "lr_noise_types2": ["dither", "JPEG", "clean"] //select from: ["gaussian", "JPEG", "quantize", "poisson", "dither", "s&p", "speckle", "clean"]
+      "lr_noise_types2": ["JPEG", "clean"] //select from: ["gaussian", "JPEG", "quantize", "poisson", "dither", "s&p", "speckle", "clean"]
     }
   },
 
