@@ -16,7 +16,7 @@ JPEG(){
     FILENAME=$(basename -- "$file")
     FL="${FILENAME%.*}"
     OG=$FL.jpeg
-    cType="`seq ${MINc} ${MAXc} | shuf -n1`" 
+    cType="`seq ${MINc} ${MAXc} | shuf -n1`"
     SAM="`shuf -e -n1 "4:1:0" "4:2:0" `"
     if [ ${2} != "0" ]
     then
@@ -34,9 +34,9 @@ PNG(){
     FL="${FILENAME%.*}"
     OG=$FL.jpeg
     OP1=$FL.png
-    magick convert LR2/$OG -define png:color-type=2 LR2/$OP1 
+    magick convert LR2/$OG -define png:color-type=2 LR2/$OP1
     }
-for file in *.png
+for file in HRforEDIT/*.png
     do
         TMS="`seq 350 4425 | shuf | head -n1`"
         FILENAME=$(basename -- "$file")
@@ -46,4 +46,3 @@ for file in *.png
         JPEG "${file}" "${TMS}" && PNG
     done
     wait
-    
