@@ -4,7 +4,7 @@
   "use_tb_logger": true,
   "model": "srragan", //srragan | sr | srgan | ppon | asrragan
   "scale": 1,
-  // "gpu_ids": [1],
+  "gpu_ids": [1],
 
   //Dataset options:
   "datasets": {
