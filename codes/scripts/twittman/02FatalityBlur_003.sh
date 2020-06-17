@@ -1,4 +1,3 @@
-#!/bin/sh
 HRforEDIT="/Volumes/YoungBuffalo/datasets/div2k-flickr/sub-hr"
 mkdir -p inter
 mkdir -p LRjpeg

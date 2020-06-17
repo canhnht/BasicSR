@@ -1,4 +1,3 @@
-#!/bin/sh
 read -e -p "Min Compression: " minCom
 read -e -p "Max Compression: " maxCom
 MINc=$minCom
